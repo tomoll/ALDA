@@ -7,15 +7,15 @@ package graphs;
 
 /**
  *
- * @author tolleTobi
+ * @author Tobi
  */
-public class Graphs {
+public class V {
+    private int number;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
+    public V(int number) {
+        this.number = number;
     }
+    
+    
     
 }
