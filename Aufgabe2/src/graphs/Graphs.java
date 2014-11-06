@@ -7,7 +7,7 @@ package graphs;
 
 /**
  *
- * @author Tobi
+ * @author tolleTobi
  */
 public class Graphs {
 
