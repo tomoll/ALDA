@@ -9,13 +9,13 @@ package graphs;
  *
  * @author Tobi
  */
-public class V {
-    private int number;
+public class NewMain {
 
-    public V(int number) {
-        this.number = number;
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        x = 
     }
-    
-    
     
 }

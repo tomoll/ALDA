@@ -11,15 +11,17 @@ import java.util.Map;
 
 /**
  *
- * @author Tobi
+ * @author Tobi und schrissi
  * @param <V>
  */
 public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
-    Map<V, HashMap<V,Double>> adjacencyList;
-   
+
+    HashMap<V, HashMap<V, Double>> adjacencyList;
 
     public AdjacencyListUndirectedGraph() {
-        this.adjacencyList = new HashMap<V, HashMap<V,Double>>();
+
+        adjacencyList = new HashMap<V, HashMap<V, Double>>();
+
     }
 
     @Override
@@ -29,28 +31,49 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
 
     @Override
     public boolean addVertex(V v) {
-        adjacencyList.put(v, new HashMap<V, HashMap<V,Double>>());
-        return true;
+        if (!containsVertex(v)) {
+            adjacencyList.put(v, new HashMap<V, Double>());
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean addEdge(V v, V w) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            if (containsVertex(v) && containsVertex(w) && (v != w)) {
+                if (!containsEdge(v, w)) {
+                    adjacencyList.get(v).put(w, 1.0);
+                    return true;
+                }
+                return false;
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+            return false;
+        }
+
     }
 
     @Override
     public boolean addEdge(V v, V w, double weight) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (!containsEdge(v, w)) {
+            adjacencyList.get(v).put(w, weight);
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean containsVertex(V v) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return adjacencyList.containsKey(v);
     }
 
     @Override
     public boolean containsEdge(V v, V w) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return adjacencyList.get(v).containsKey(w);
     }
 
     @Override
@@ -87,5 +110,5 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
     public List<Object> getIncidentEdgeList(V v) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }
