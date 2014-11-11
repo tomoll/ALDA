@@ -6,8 +6,11 @@
 package graphs;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
@@ -26,7 +29,7 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
 
     @Override
     public int getDegree(V v) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     @Override
@@ -44,6 +47,7 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
             if (containsVertex(v) && containsVertex(w) && (v != w)) {
                 if (!containsEdge(v, w)) {
                     adjacencyList.get(v).put(w, 1.0);
+                    
                     return true;
                 }
                 return false;
@@ -78,27 +82,58 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
 
     @Override
     public double getWeight(V v, V w) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            if (containsVertex(v) && containsVertex(w)) {
+                if (!containsEdge(v, w)) {
+                    return 0;
+                }
+                return adjacencyList.get(v).get(w);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+            return -1;
+        }
     }
 
     @Override
     public int getNumberOfVertexes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return adjacencyList.size();
     }
 
     @Override
     public int getNumberOfEdges() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int number = 0;
+        
+        for (V v : adjacencyList.keySet()) { 
+            number += adjacencyList.get(v).size();
+        }
+        return number/2;
     }
 
     @Override
     public List<V> getVertexList() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<V> temp = new LinkedList<V>();
+        for(V v : adjacencyList.keySet()){
+            temp.add(v);
+        }
+        return temp;
     }
 
     @Override
     public List<Object> getEdgeList() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Edge<V>> temp = new LinkedList<Edge<V>>();
+        
+        for(V v : adjacencyList.keySet()){
+            if(adjacencyList.get(v).isEmpty()){                  //vielleicht auch mit isEmpty
+                new Edge(adjacencyList.get(v), adjacencyList.)
+                
+            
+            
+            temp.add(v);
+        }
+        return temp;
     }
 
     @Override
