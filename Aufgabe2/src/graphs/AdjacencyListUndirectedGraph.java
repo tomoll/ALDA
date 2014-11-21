@@ -29,6 +29,8 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
 
     @Override
     public int getDegree(V v) {
+        int i = 1;
+        return i;
         
     }
 
@@ -63,11 +65,21 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
 
     @Override
     public boolean addEdge(V v, V w, double weight) {
-        if (!containsEdge(v, w)) {
-            adjacencyList.get(v).put(w, weight);
-            return true;
-        }
-        return false;
+        try {
+            if (containsVertex(v) && containsVertex(w) && (v != w)) {
+                if (!containsEdge(v, w)) {
+                    adjacencyList.get(v).put(w, weight);
+                    
+                    return true;
+                }
+                return false;
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+            return false;
+        } 
     }
 
     @Override
@@ -122,28 +134,54 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
     }
 
     @Override
-    public List<Object> getEdgeList() {
+    public List<Edge<V>> getEdgeList() {
         List<Edge<V>> temp = new LinkedList<Edge<V>>();
-        
         for(V v : adjacencyList.keySet()){
-            if(adjacencyList.get(v).isEmpty()){                  //vielleicht auch mit isEmpty
-                new Edge(adjacencyList.get(v), adjacencyList.)
-                
-            
-            
-            temp.add(v);
+            if(adjacencyList.get(v)!=null){                  //vielleicht auch mit isEmpty
+                Edge temp1 = new Edge(v,adjacencyList.get(v));
+                Edge temp2 = new Edge(adjacencyList.get(v), v);
+                if(!temp.contains(temp1) && !temp.contains(temp2)){
+                    temp.add(temp1);
+                }
+            }
         }
         return temp;
     }
 
     @Override
     public List<V> getAdjacentVertexList(V v) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<V> temp = new LinkedList<V>();
+        try{
+            if(adjacencyList.containsKey(v)){
+                for(V w : adjacencyList.get(v).keySet()){
+                    temp.add(w);
+                }                
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch(IllegalArgumentException e) {
+            System.out.println(e);
+        }
+        return temp;
     }
 
     @Override
-    public List<Object> getIncidentEdgeList(V v) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Edge<V>> getIncidentEdgeList(V v) {
+        List<Edge<V>> temp = new LinkedList<Edge<V>>();
+        try{
+            if(adjacencyList.containsKey(v)){
+                //muss des von v aus nur die Knoten wo mit Kante verbunden ist oder wie???
+                
+                return temp;
+                
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch(IllegalArgumentException e){
+            System.out.println(e);
+        }
+        return temp;
+
     }
 
 }
