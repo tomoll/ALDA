@@ -8,9 +8,6 @@ package graphs;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  *
@@ -29,9 +26,19 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
 
     @Override
     public int getDegree(V v) {
-        int i = 1;
-        return i;
-        
+        List<V> list = new LinkedList<>();
+        try{
+            if(adjacencyList.containsKey(v)){
+                list = this.getAdjacentVertexList(v);
+            } else {
+                throw new IllegalArgumentException();
+            }
+            
+        } catch (IllegalArgumentException e){
+            System.out.println(e);
+        }
+        return list.size();
+
     }
 
     @Override
@@ -49,7 +56,8 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
             if (containsVertex(v) && containsVertex(w) && (v != w)) {
                 if (!containsEdge(v, w)) {
                     adjacencyList.get(v).put(w, 1.0);
-                    
+                    adjacencyList.get(w).put(v, 1.0);
+
                     return true;
                 }
                 return false;
@@ -69,7 +77,8 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
             if (containsVertex(v) && containsVertex(w) && (v != w)) {
                 if (!containsEdge(v, w)) {
                     adjacencyList.get(v).put(w, weight);
-                    
+                    adjacencyList.get(w).put(v, weight);
+
                     return true;
                 }
                 return false;
@@ -79,7 +88,7 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
         } catch (IllegalArgumentException e) {
             System.out.println(e);
             return false;
-        } 
+        }
     }
 
     @Override
@@ -117,17 +126,17 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
     @Override
     public int getNumberOfEdges() {
         int number = 0;
-        
-        for (V v : adjacencyList.keySet()) { 
+
+        for (V v : adjacencyList.keySet()) {
             number += adjacencyList.get(v).size();
         }
-        return number/2;
+        return number / 2;
     }
 
     @Override
     public List<V> getVertexList() {
         List<V> temp = new LinkedList<V>();
-        for(V v : adjacencyList.keySet()){
+        for (V v : adjacencyList.keySet()) {
             temp.add(v);
         }
         return temp;
@@ -136,14 +145,18 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
     @Override
     public List<Edge<V>> getEdgeList() {
         List<Edge<V>> temp = new LinkedList<Edge<V>>();
-        for(V v : adjacencyList.keySet()){
-            if(adjacencyList.get(v)!=null){                  //vielleicht auch mit isEmpty
-                Edge temp1 = new Edge(v,adjacencyList.get(v));
-                Edge temp2 = new Edge(adjacencyList.get(v), v);
-                if(!temp.contains(temp1) && !temp.contains(temp2)){
-                    temp.add(temp1);
+        for (V v : adjacencyList.keySet()) {
+            if (adjacencyList.get(v) != null) {
+                HashMap<V, Double> map = adjacencyList.get(v);
+                for (V w : map.keySet()) {
+                    Edge temp1 = new Edge(v, w, map.get(w));
+                    Edge temp2 = new Edge(w, v, map.get(w));
+                    if (!temp.contains(temp1) && !temp.contains(temp2)) {
+                        temp.add(temp1);
+                    }
                 }
             }
+
         }
         return temp;
     }
@@ -151,15 +164,15 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
     @Override
     public List<V> getAdjacentVertexList(V v) {
         List<V> temp = new LinkedList<V>();
-        try{
-            if(adjacencyList.containsKey(v)){
-                for(V w : adjacencyList.get(v).keySet()){
+        try {
+            if (adjacencyList.containsKey(v)) {
+                for (V w : adjacencyList.get(v).keySet()) {
                     temp.add(w);
-                }                
+                }
             } else {
                 throw new IllegalArgumentException();
             }
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println(e);
         }
         return temp;
@@ -168,16 +181,17 @@ public class AdjacencyListUndirectedGraph<V> implements UndirectedGraph<V> {
     @Override
     public List<Edge<V>> getIncidentEdgeList(V v) {
         List<Edge<V>> temp = new LinkedList<Edge<V>>();
-        try{
-            if(adjacencyList.containsKey(v)){
-                //muss des von v aus nur die Knoten wo mit Kante verbunden ist oder wie???
-                
+        try {
+            if (adjacencyList.containsKey(v)) {
+                for (V w : adjacencyList.get(v).keySet()) {
+                    Edge temp1 = new Edge(v, w, adjacencyList.get(v).get(w));
+                    temp.add(temp1);
+                }
                 return temp;
-                
             } else {
                 throw new IllegalArgumentException();
             }
-        } catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             System.out.println(e);
         }
         return temp;

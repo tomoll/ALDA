@@ -11,9 +11,10 @@ import java.util.List;
 
 /**
  *
- * @author Tobi
+ * @author Tobi und schrissi
+ * @param <V>
  */
-public class AdjacencyListDirectedGraph<V> implements UndirectedGraph<V> {
+public class AdjacencyListDirectedGraph<V> implements DirectedGraph<V> {
 
     HashMap<V, HashMap<V, Double>> adjacencyIn;
     HashMap<V, HashMap<V, Double>> adjacencyOut;
@@ -21,11 +22,6 @@ public class AdjacencyListDirectedGraph<V> implements UndirectedGraph<V> {
     public AdjacencyListDirectedGraph() {
         this.adjacencyIn = new HashMap<>();
         this.adjacencyOut = new HashMap<>();
-    }
-
-    @Override
-    public int getDegree(V v) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -115,7 +111,7 @@ public class AdjacencyListDirectedGraph<V> implements UndirectedGraph<V> {
         for (V v : adjacencyOut.keySet()) {
             number += adjacencyOut.get(v).size();
         }
-        return number;                                  //glaub des passt so ned gibt ja auch welche wo Kanten nur hingehn
+        return number;
     }
 
     @Override
@@ -129,12 +125,14 @@ public class AdjacencyListDirectedGraph<V> implements UndirectedGraph<V> {
 
     @Override
     public List<Edge<V>> getEdgeList() {
-        List<Edge<V>> temp = new LinkedList<Edge<V>>();         //blicks nemme hier aufgehört
+        List<Edge<V>> temp = new LinkedList<Edge<V>>();
         for (V v : adjacencyOut.keySet()) {
-            if (adjacencyOut.get(v) != null || adjacencyIn.get(v)!=null) {                  //vielleicht auch mit isEmpty
-                Edge temp1 = new Edge(v, adjacencyOut.get(v));
-                if (!temp.contains(temp1) && !temp.contains(temp2)) {
+            if (adjacencyOut.get(v) != null) {
+                HashMap<V, Double> map = adjacencyOut.get(v);
+                for (V w : map.keySet()) {
+                    Edge temp1 = new Edge(v, w, map.get(w));
                     temp.add(temp1);
+
                 }
             }
         }
@@ -143,12 +141,150 @@ public class AdjacencyListDirectedGraph<V> implements UndirectedGraph<V> {
 
     @Override
     public List<V> getAdjacentVertexList(V v) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<V> temp = new LinkedList<V>();
+        try {
+            if (adjacencyOut.containsKey(v)) {
+                for (V w : adjacencyOut.get(v).keySet()) {
+                    temp.add(w);
+                }
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+        }
+        return temp;
+
     }
 
     @Override
     public List<Edge<V>> getIncidentEdgeList(V v) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        List<Edge<V>> temp = new LinkedList<Edge<V>>();
+        try {
+            if (adjacencyOut.containsKey(v)) {
+                for (V w : adjacencyOut.get(v).keySet()) {
+                    Edge temp1 = new Edge(v, w, adjacencyOut.get(v).get(w));
+                    temp.add(temp1);
+                }
+                return temp;
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+        }
+        return temp;
+    }
+
+    @Override
+    public int getInDegree(V v) {
+        int i = 0;
+
+        try {
+            if (adjacencyIn.containsKey(v)) {
+                for (V w : adjacencyIn.get(v).keySet()) {
+                    i++;
+                }
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+        }
+        return i;
+
+    }
+
+    @Override
+    public int getOutDegree(V v) {
+        int i = 0;
+
+        try {
+            if (adjacencyOut.containsKey(v)) {
+                for (V w : adjacencyOut.get(v).keySet()) {
+                    i++;
+                }
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+        }
+        return i;
+    }
+
+    @Override
+    public List<V> getPredecessorVertexList(V v) {
+        List<V> temp = new LinkedList<V>();
+        try {
+            if (adjacencyIn.containsKey(v)) {
+                for (V w : adjacencyIn.get(v).keySet()) {
+                    temp.add(w);
+                }
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+        }
+        return temp;
+    }
+
+    @Override
+    public List<V> getSuccessorVertexList(V v) {
+        List<V> temp = new LinkedList<V>();
+        try {
+            if (adjacencyOut.containsKey(v)) {
+                for (V w : adjacencyOut.get(v).keySet()) {
+                    temp.add(w);
+                }
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+        }
+        return temp;
+    }
+
+    @Override
+    public List<Edge<V>> getOutgoingEdgeList(V v) {
+
+        List<Edge<V>> temp = new LinkedList<Edge<V>>();
+        try {
+            if (adjacencyOut.containsKey(v)) {
+                for (V w : adjacencyOut.get(v).keySet()) {
+                    Edge temp1 = new Edge(v, w, adjacencyOut.get(v).get(w));
+                    temp.add(temp1);
+                }
+                return temp;
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+        }
+        return temp;
+    }
+
+    @Override
+    public List<Edge<V>> getIncomingEdgeList(V v) {
+        List<Edge<V>> temp = new LinkedList<Edge<V>>();
+        try {
+            if (adjacencyIn.containsKey(v)) {
+                for (V w : adjacencyIn.get(v).keySet()) {
+                    Edge temp1 = new Edge(w, v, adjacencyIn.get(v).get(w));
+                    temp.add(temp1);
+                }
+                return temp;
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+        }
+        return temp;
     }
 
 }
