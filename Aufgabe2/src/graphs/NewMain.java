@@ -29,7 +29,7 @@ public class NewMain {
         Graph dgr = new AdjacencyListDirectedGraph();
         AdjacencyListDirectedGraph anziehen = new AdjacencyListDirectedGraph();
         Graph scotland = new AdjacencyListUndirectedGraph();
-        Graph scotlandKompl = new AdjacencyListUndirectedGraph();
+        Graph<Integer> scotlandKompl = new AdjacencyListUndirectedGraph();
 
         //Simulation vorbereiten
         SYSimulation sim;
@@ -39,7 +39,7 @@ public class NewMain {
             e.printStackTrace();
             return;
         }
-       
+
         for (int i = 1; i < 200; i++) {
             scotland.addVertex(i);
             scotlandKompl.addVertex(i);
@@ -47,15 +47,13 @@ public class NewMain {
         }
 
         //alle Taxiverbindungen einlesen
-       
         try {
             Methoden.einlesen("Taxi", scotland);
         } catch (IOException e) {
             return;
         }
-        
-         //alle Verbindungen mit Gewicht einlesen
-       
+
+        //alle Verbindungen mit Gewicht einlesen
         try {
             Methoden.allesEinlesen(scotlandKompl);
         } catch (IOException e) {
@@ -197,9 +195,7 @@ public class NewMain {
         }
         sim.stopSequence();
         System.out.println("");
-        
-        
-        
+
         //Ausgabe ungerichtete tiefensuche Scotland 
         System.out.println("Ungerichtete Tiefensuche ScotlandYard");
         sim.startSequence("Tiefensuche");
@@ -223,43 +219,47 @@ public class NewMain {
         }
 
         sim.stopSequence();
-        
-        
-        
-        
-        
+
         //Ausgabe billigste Fahrt Scotland 
+        int start = 1;
+        int ziel = 199;
         System.out.println("Billigste Fahrt ScotlandYard");
         sim.startSequence("Dijkstra");
         DijkstraShortestPath dijki = new DijkstraShortestPath(scotlandKompl);
-        dijki.searchShortestPath(1, 114);
+        boolean passt = dijki.searchShortestPath(start, ziel);
         System.out.println(dijki.getDistance());
         List<Integer> dijkstra = new LinkedList<>();
         dijkstra = dijki.getShortestPath();
-        
 
-        List besuchtdij = new LinkedList();
-        for (int s : dijkstra) {
-            sim.visitStation(s);
-        }
-        /*
-        for (int s : dijkstra) {
-            besuchtdij.add(s);
-            List<Integer> adjacentVertexes = new LinkedList<>();           //sim.drive()
-            adjacentVertexes = scotland.getAdjacentVertexList(s);
-            for (int v : adjacentVertexes) {
-                if (!besuchtdij.contains(v)) {
-                    sim.drive(s, v, Color.YELLOW);
-                    besuchtdij.add(v);
+        if (passt) {
+            for (int s : dijkstra) {
+
+                sim.visitStation(s);
+                double d = Double.MAX_VALUE;
+                for (int b : scotlandKompl.getAdjacentVertexList(s)) {
+                    if (scotlandKompl.getWeight(ziel, s) < d) {
+                        d = scotlandKompl.getWeight(ziel, s);
+                    }
+
                 }
-            }
-            System.out.println(s);
-        }*/
 
+                if (d == 5.0) {
+                    sim.drive(ziel, s, Color.red);
+                }
+                if (d == 3.0) {
+                    sim.drive(ziel, s, Color.yellow);
+                }
+                if (d == 2.0) {
+                    sim.drive(ziel, s, Color.green);
+                }
+                ziel = s;
+
+            }
+        } else {
+            System.out.println("FEHLER!!!");
+        }
         sim.stopSequence();
-        
-        
-        
+
     }
 
 }

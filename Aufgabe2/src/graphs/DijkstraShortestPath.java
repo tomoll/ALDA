@@ -14,8 +14,12 @@ public class DijkstraShortestPath<V> {
 
     private final Graph<V> graph;
     private boolean success;
-    private List<V> shortestPath;
+    private LinkedList<V> shortestPath;
     private double weight;
+    
+    private Queue<V> kl;
+    private HashMap<V, V> previous;
+    private HashMap<V, Double> distance;
 
     public DijkstraShortestPath(Graph<V> g) {
         this.graph = g;
@@ -26,9 +30,9 @@ public class DijkstraShortestPath<V> {
     public boolean searchShortestPath(V s, V g) {
 
         V x = null;
-        Queue<V> kl = new LinkedList<>();
-        HashMap<V, V> previous = new HashMap<>();
-        HashMap<V, Double> distance = new HashMap<>();
+        kl = new LinkedList<>();
+        previous = new HashMap<>();
+        distance = new HashMap<>();
 
         for (V v : graph.getVertexList()) {
             previous.put(v, null);
@@ -38,14 +42,9 @@ public class DijkstraShortestPath<V> {
         for (V v : graph.getVertexList()) {
             if (v.equals(s)) {
                 distance.put(v, 0.0);
+                break;
             }
         }
-
-        
-        /*List<V> adjacent = graph.getAdjacentVertexList(s);
-         for(V v : adjacent){
-         kl.add(v);
-         }*/
 
         kl.add(s);
         while (!kl.isEmpty()) {
@@ -58,6 +57,22 @@ public class DijkstraShortestPath<V> {
             }
             kl.remove(x);
 
+            if (x.equals(g)) {          //war davor if(x==g)
+                shortestPath.add(x);
+                weight = distance.get(x);
+                System.out.println("1");
+
+                do {
+                    //weight = weight + distance.get(x);
+                    shortestPath.add(previous.get(x));
+                    x = previous.get(x);
+                } while (x != s);
+                                System.out.println("2");
+
+
+                success = true;
+                return success;
+            }
             /*if (shortestPath.contains(x)) {
                 continue;
             }
@@ -72,20 +87,11 @@ public class DijkstraShortestPath<V> {
                     //previous.remove(w);
                     previous.put(w, x);
                     distance.put(w, (distance.get(x) + graph.getWeight(x, w)));
+                                    System.out.println("0");
+
                 }
             }
-            if (x == g) {
-                shortestPath.add(x);
-
-                do {
-                    weight = weight + distance.get(x);
-                    shortestPath.add(previous.get(x));
-                    x = previous.get(x);
-                } while (x != s);
-
-                success = true;
-                return success;
-            }
+            
         }
 
         return success;
