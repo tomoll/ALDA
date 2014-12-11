@@ -60,7 +60,7 @@ public class Methoden {
             }
         }
         in.close();
-        br.close();9
+        br.close();
     }
 
 }
