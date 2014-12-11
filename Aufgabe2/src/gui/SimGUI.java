@@ -39,7 +39,7 @@ public class SimGUI extends JFrame implements Runnable,ActionListener,ChangeList
 	private volatile int userState;
 	private volatile boolean simAborted;
 	private volatile int SLEEP_TIME;
-	private static final int SLEEP_TIME_MAX = 5000;
+	private static final int SLEEP_TIME_MAX = 50;
 	private static final String windowName = "Scotland Yard Simulation";
 	
 	public SimGUI() throws IOException {

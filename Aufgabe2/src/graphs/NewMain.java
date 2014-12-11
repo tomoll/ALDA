@@ -8,6 +8,10 @@ package graphs;
 import static graphs.GraphTraversion.*;
 import java.util.LinkedList;
 import java.util.List;
+import graphs.Methoden;
+import java.awt.Color;
+import java.io.IOException;
+import sim.SYSimulation;
 
 /**
  *
@@ -19,10 +23,46 @@ public class NewMain {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        AdjacencyListUndirectedGraph ugr = new AdjacencyListUndirectedGraph();
-        AdjacencyListDirectedGraph dgr = new AdjacencyListDirectedGraph();
-        AdjacencyListDirectedGraph anziehen = new AdjacencyListDirectedGraph();
 
+        //Listenobjekte erstellen
+        Graph ugr = new AdjacencyListUndirectedGraph();
+        Graph dgr = new AdjacencyListDirectedGraph();
+        AdjacencyListDirectedGraph anziehen = new AdjacencyListDirectedGraph();
+        Graph scotland = new AdjacencyListUndirectedGraph();
+        Graph scotlandKompl = new AdjacencyListUndirectedGraph();
+
+        //Simulation vorbereiten
+        SYSimulation sim;
+        try {
+            sim = new SYSimulation();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+       
+        for (int i = 1; i < 200; i++) {
+            scotland.addVertex(i);
+            scotlandKompl.addVertex(i);
+
+        }
+
+        //alle Taxiverbindungen einlesen
+       
+        try {
+            Methoden.einlesen("Taxi", scotland);
+        } catch (IOException e) {
+            return;
+        }
+        
+         //alle Verbindungen mit Gewicht einlesen
+       
+        try {
+            Methoden.allesEinlesen(scotlandKompl);
+        } catch (IOException e) {
+            return;
+        }
+
+        //den verschiedenen Graphen Punkte und Kanten zuweisen
         ugr.addVertex("Heimat");
         ugr.addVertex("Caspa");
         ugr.addVertex("Klimpi");
@@ -40,7 +80,7 @@ public class NewMain {
         dgr.addVertex("Destille");
         dgr.addVertex("Bett");
         dgr.addVertex("Speien");
-        
+
         anziehen.addVertex("Strümpfe");
         anziehen.addVertex("Schuhe");
         anziehen.addVertex("Hose");
@@ -54,19 +94,20 @@ public class NewMain {
         anziehen.addVertex("Handschuhe");
         anziehen.addVertex("Mütze");
 
-        anziehen.addEdge("Strümpfe","Hose");
-        anziehen.addEdge("Unterhose", "Hose");
-        anziehen.addEdge("Unterhemd", "Hose");
+        anziehen.addEdge("Strümpfe", "Hose");
         anziehen.addEdge("Hose", "Hemd");
         anziehen.addEdge("Hose", "Gürtel");
         anziehen.addEdge("Hemd", "Pullover");
         anziehen.addEdge("Gürtel", "Mantel");
         anziehen.addEdge("Pullover", "Mantel");
-        anziehen.addEdge("Mantel","Schal");
+        anziehen.addEdge("Mantel", "Schal");
         anziehen.addEdge("Mantel", "Handschuhe");
-        anziehen.addEdge("Schal","Mütze");
+        anziehen.addEdge("Schal", "Mütze");
         anziehen.addEdge("Handschuhe", "Mütze");
-        
+        anziehen.addEdge("Mütze", "Schuhe");
+        anziehen.addEdge("Unterhemd", "Hose");
+        anziehen.addEdge("Unterhose", "Hose");
+
         ugr.addEdge("Heimat", "Caspa", 0.6);
         ugr.addEdge("Caspa", "Klimpi", 0.9);
         ugr.addEdge("Klimpi", "Shooters", 1.2);
@@ -76,7 +117,6 @@ public class NewMain {
         ugr.addEdge("Bett", "Speien", 0.5);
         ugr.addEdge("Speien", "Destille", 0.4);
         ugr.addEdge("Destille", "Heimat", 1.5);
-        
 
         dgr.addEdge("Heimat", "Caspa", 0.6);
         dgr.addEdge("Caspa", "Klimpi", 0.9);
@@ -87,41 +127,139 @@ public class NewMain {
         dgr.addEdge("Bett", "Speien", 0.5);
         dgr.addEdge("Speien", "Destille", 0.4);
         dgr.addEdge("Destille", "Heimat", 1.5);
-        
-        
-        
 
+        //Ausgabe ungerichtete tiefensuche
+        System.out.println("Ungerichtete Tiefensuche");
         List temp1 = new LinkedList();
         temp1 = depthFirstSearch(ugr, "Heimat");
         for (Object s : temp1) {
             System.out.println(s);
         }
         System.out.println("");
+
+        //Ausgabe ungerichtete breitensuche
+        System.out.println("Ungerichtete Breitensuche");
         List temp2 = new LinkedList();
         temp2 = breadthFirstSearch(ugr, "Heimat");
         for (Object s : temp2) {
             System.out.println(s);
         }
         System.out.println("");
+
+        //Ausgabe gerichtete tiefensuche
+        System.out.println("Gerichtete Tiefensuche");
         List temp3 = new LinkedList();
         temp3 = depthFirstSearch(dgr, "Heimat");
         for (Object s : temp3) {
             System.out.println(s);
         }
         System.out.println("");
+
+        //Ausgabe gerichtete breitensuche
+        System.out.println("Gerichtete Breitensuche");
         List temp4 = new LinkedList();
         temp4 = breadthFirstSearch(dgr, "Heimat");
         for (Object s : temp4) {
             System.out.println(s);
         }
-        
+
         System.out.println("");
+
+        //Ausgabe gerichtete topologische suche
+        System.out.println("Gerichtete Topologiesuche");
         List temp5 = new LinkedList();
         temp5 = topologicalSort(anziehen);
         for (Object s : temp5) {
             System.out.println(s);
         }
 
+        System.out.println("");
+        //Ausgabe ungerichtete breitensuche Scotland 
+        System.out.println("Ungerichtete Breitensuche ScotlandYard");
+        sim.startSequence("Breitensuche");
+        List<Integer> breitensuche = new LinkedList<>();
+        breitensuche = breadthFirstSearch(scotland, 1);
+        List besuchtbr = new LinkedList();
+        for (int s : breitensuche) {
+            sim.visitStation(s);
+        }
+        for (int s : breitensuche) {
+            besuchtbr.add(s);
+            List<Integer> adjacentVertexes = new LinkedList<>();           //sim.drive()
+            adjacentVertexes = scotland.getAdjacentVertexList(s);
+            for (int v : adjacentVertexes) {
+                if (!besuchtbr.contains(v)) {
+                    sim.drive(s, v, Color.YELLOW);
+                    besuchtbr.add(v);
+                }
+            }
+            System.out.println(s);
+        }
+        sim.stopSequence();
+        System.out.println("");
+        
+        
+        
+        //Ausgabe ungerichtete tiefensuche Scotland 
+        System.out.println("Ungerichtete Tiefensuche ScotlandYard");
+        sim.startSequence("Tiefensuche");
+        List<Integer> tiefensuche = new LinkedList<>();
+        tiefensuche = depthFirstSearch(scotland, 1);
+        List besuchtti = new LinkedList();
+        for (int s : tiefensuche) {
+            sim.visitStation(s);
+        }
+        for (int s : tiefensuche) {
+            besuchtti.add(s);
+            List<Integer> adjacentVertexes = new LinkedList<>();           //sim.drive()
+            adjacentVertexes = scotland.getAdjacentVertexList(s);
+            for (int v : adjacentVertexes) {
+                if (!besuchtti.contains(v)) {
+                    sim.drive(s, v, Color.YELLOW);
+                    besuchtti.add(v);
+                }
+            }
+            System.out.println(s);
+        }
+
+        sim.stopSequence();
+        
+        
+        
+        
+        
+        //Ausgabe billigste Fahrt Scotland 
+        System.out.println("Billigste Fahrt ScotlandYard");
+        sim.startSequence("Dijkstra");
+        DijkstraShortestPath dijki = new DijkstraShortestPath(scotlandKompl);
+        dijki.searchShortestPath(1, 114);
+        System.out.println(dijki.getDistance());
+        List<Integer> dijkstra = new LinkedList<>();
+        dijkstra = dijki.getShortestPath();
+        
+
+        List besuchtdij = new LinkedList();
+        for (int s : dijkstra) {
+            sim.visitStation(s);
+        }
+        /*
+        for (int s : dijkstra) {
+            besuchtdij.add(s);
+            List<Integer> adjacentVertexes = new LinkedList<>();           //sim.drive()
+            adjacentVertexes = scotland.getAdjacentVertexList(s);
+            for (int v : adjacentVertexes) {
+                if (!besuchtdij.contains(v)) {
+                    sim.drive(s, v, Color.YELLOW);
+                    besuchtdij.add(v);
+                }
+            }
+            System.out.println(s);
+        }*/
+
+        sim.stopSequence();
+        
+        
+        
     }
 
 }

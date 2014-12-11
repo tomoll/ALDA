@@ -88,16 +88,15 @@ public class GraphTraversion {
             for (V w : temp) {
                 j = 0;
                 for (V t : vl) {
-                    if(t == w) {
+                    if (t == w) {
                         break;
                     }
                     j++;
-                    
+
                 }
                 if (--inDegree[j] == 0) {
                     q.add(w);
                 }
-                
 
             }
 
